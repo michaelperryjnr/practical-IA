@@ -8,11 +8,27 @@ const server = express();
 //allowing server to use json
 server.use(express.json());
 
+//excluding _id and __v from the json response
+const exclude = '{ "_id": 0 , "__v": 0}';
+const excludejson = JSON.parse(exclude);
+
 //creating a new patient
 server.post("/createPatient", async (req, res) => {
   try {
     const patient = await Patient.create(req.body);
-    res.status(201).json(patient);
+    const showPatient = await Patient.find(patient, excludejson);
+    res.status(201).json(showPatient);
+  } catch (error) {
+    console.log(error.message);
+    res.status(503).json({ message: error.message });
+  }
+});
+
+//get all patients
+server.get("/patients", async (req, res) => {
+  try {
+    const patients = await Patient.find({}, excludejson);
+    res.status(200).json(patients);
   } catch (error) {
     console.log(error.message);
     res.status(503).json({ message: error.message });
