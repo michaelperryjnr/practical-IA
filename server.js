@@ -2,6 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 //importing patient model
 const Patient = require("./models/patientModel");
+//importing encounter model
+
+const Encounter = require("./models/encounterModel");
 
 const server = express();
 
@@ -32,6 +35,30 @@ server.get("/patients", async (req, res) => {
   } catch (error) {
     console.log(error.message);
     res.status(503).json({ message: error.message });
+  }
+});
+
+// router.get("/encounters", (req, res) => {
+//   Encounter.find()
+//     .populate("patient")
+//     .exec(function (err, encounters) {
+//       if (err) return res.status(500).send(err);
+//       res.status(200).send(encounters);
+//     });
+// });
+
+//create a encounter for a patient
+server.post("/encounter/:patientId", async (req, res) => {
+  try {
+    const { patientId } = req.params;
+    const patient = await Patient.findById(patientId);
+    const encounter = await Encounter.create(req.body);
+    patient.encounters.push(encounter);
+    await patient.save();
+    res.status(201).json(patient, excludejson);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: error.message });
   }
 });
 
