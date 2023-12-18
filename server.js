@@ -1,7 +1,23 @@
 const express = require("express");
 const mongoose = require("mongoose");
+//importing patient model
+const Patient = require("./models/patientModel");
 
 const server = express();
+
+//allowing server to use json
+server.use(express.json());
+
+//creating a new patient
+server.post("/createPatient", async (req, res) => {
+  try {
+    const patient = await Patient.create(req.body);
+    res.status(201).json(patient);
+  } catch (error) {
+    console.log(error.message);
+    res.status(503).json({ message: error.message });
+  }
+});
 
 mongoose
   .connect(
