@@ -1,4 +1,4 @@
-const mongoose = require("mongoosse");
+const mongoose = require("mongoose");
 
 const patientSchema = mongoose.Schema(
   {
@@ -35,7 +35,7 @@ const patientSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    relationshipt_with_emergency_contact: {
+    relationship_with_emergency_contact: {
       type: String,
       required: true,
     },
